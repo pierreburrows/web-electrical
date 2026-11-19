@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Copperline Electric — Panels, Standby Generators, EV Chargers</title>
-  <meta name="description" content="Licensed residential electricians. Panel upgrades, whole-home standby generators and Level 2 EV charger installs, done to code and tested before we leave.">
+  <meta name="description" content="NICEIC-approved domestic electricians. Consumer unit upgrades, whole-home standby generators and 7.4 kW EV charger installs, done to the regs and tested before we leave.">
   <meta name="theme-color" content="#0a0a0b">
   <meta property="og:title" content="Copperline Electric">
   <meta property="og:description" content="Panels, standby generators and EV chargers. Tested, not guessed.">
@@ -47,7 +47,7 @@
 
 <!-- ============ DOCK ============ -->
 <div class="dock">
-  <div class="dock__pill"><i class="dot dot--mint"></i><span>Electricians on the road today · <a href="tel:+14105550199">(410) 555-0199</a></span></div>
+  <div class="dock__pill"><i class="dot dot--mint"></i><span>Electricians on the road today · <a href="tel:+442079460199">020 7946 0199</a></span></div>
   <a class="btn btn--orange btn--sm" href="#book">Book a visit</a>
 </div>
 
@@ -60,12 +60,15 @@
       <video data-scene="0" class="loop" muted playsinline loop autoplay preload="auto" poster="assets/img/house_dusk.jpg" aria-label="White modern farmhouse at dusk">
         <source src="assets/video/hero_loop.mp4" type="video/mp4">
       </video>
-      <img data-scene="1" src="assets/img/garage_car.jpg" alt="Bright garage with an electric car and a closed breaker panel">
+      <video data-scene="1" class="scrub" muted playsinline preload="auto" poster="assets/img/garage_car.jpg" aria-label="Bright garage with an electric car and a closed breaker panel">
+        <source src="assets/video/garage_push.mp4" type="video/mp4">
+      </video>
       <video data-scene="2" class="scrub" muted playsinline preload="auto" poster="assets/img/panel_closed.jpg">
         <source src="assets/video/panel_open.mp4" type="video/mp4">
       </video>
-      <img data-scene="3" src="assets/img/panel_open.jpg" alt="Open breaker panel with labeled breakers">
-      <img data-scene="4" src="assets/img/panel_exploded.jpg" alt="Exploded view of a breaker panel's layers">
+      <video data-scene="3" data-span="2" class="scrub" muted playsinline preload="auto" poster="assets/img/panel_open.jpg" aria-label="The open panel separating into its layers">
+        <source src="assets/video/panel_explode.mp4" type="video/mp4">
+      </video>
       <video data-scene="5" class="loop" muted playsinline loop preload="metadata" poster="assets/img/wiring_glow.jpg">
         <source src="assets/video/wiring_loop.mp4" type="video/mp4">
       </video>
@@ -87,12 +90,12 @@
       <div class="scene" data-scene="2" data-reveal="0.55">
         <p class="kicker">01 · Dead front</p>
         <h2 class="display">Door open.<br>Nothing<br>hidden.</h2>
-        <p class="lede">A 200 A main on top, every branch breaker labeled, correct wire size for each one.</p>
+        <p class="lede">A 100 A main switch on top, every circuit on its own labelled RCBO, the right cable size for each one.</p>
       </div>
       <div class="scene" data-scene="3">
         <p class="kicker">01 · Commissioning</p>
         <h2 class="display">Tested.<br>Not guessed.</h2>
-        <p class="lede">We meter the service, torque every lug to spec and log it before the door closes.</p>
+        <p class="lede">We test every circuit, torque every terminal to spec and certify it before the door closes.</p>
       </div>
       <div class="scene" data-scene="4">
         <p class="kicker">01 · Anatomy</p>
@@ -102,15 +105,15 @@
       <div class="scene" data-scene="5">
         <p class="kicker">01 · Distribution</p>
         <h2 class="display">Then the<br>power goes<br>everywhere.</h2>
-        <p class="lede">Kitchen, bedrooms, HVAC, the garage. Each circuit sized, protected and labeled so you can find it at 2 a.m.</p>
+        <p class="lede">Kitchen, bedrooms, heating, the garage. Each circuit sized, protected and labelled so you can find it at 2 a.m.</p>
       </div>
     </div>
 
     <aside class="hud" aria-live="polite">
       <div class="hud__head"><span>01 · Service meter</span><span class="hud__status"><i class="dot"></i><b data-status>Standby</b></span></div>
       <div class="hud__row"><span>Line voltage</span><b data-key="volts">— V</b></div>
-      <div class="hud__row"><span>Main breaker</span><b data-key="main">200 A</b></div>
-      <div class="hud__row"><span>Circuits live</span><b data-key="live">0 / 24</b></div>
+      <div class="hud__row"><span>Main switch</span><b data-key="main">100 A</b></div>
+      <div class="hud__row"><span>Circuits live</span><b data-key="live">0 / 18</b></div>
     </aside>
 
     <div class="rail" aria-hidden="true"><i></i></div>
@@ -137,13 +140,13 @@
       <div class="board__stats">
         <div class="stat"><span>Load on the main</span><b id="statLoad">0 A</b></div>
         <div class="stat"><span>Rooms lit</span><b id="statRooms">0 / 9</b></div>
-        <div class="stat stat--meter"><i class="meter"><b id="meterFill"></b></i><span id="meterText">0% of a 200 A service</span></div>
+        <div class="stat stat--meter"><i class="meter"><b id="meterFill"></b></i><span id="meterText">0% of a 100 A supply</span></div>
       </div>
     </div>
 
     <div class="panelui">
       <div class="panelui__main">
-        <span>Main · 200</span>
+        <span>Main · 100</span>
         <button class="sw sw--main" id="mainSw" type="button" role="switch" aria-checked="false" aria-label="Main breaker"><i></i></button>
       </div>
       <div class="panelui__grid" id="grid"></div>
@@ -160,11 +163,15 @@
 <section class="chapter" id="generators" data-chapter="generators" data-scenes="3" style="--n:3">
   <div class="stage">
     <div class="media">
-      <img data-scene="0" src="assets/img/generator_dark.jpg" alt="Standby generator beside a dark house in the rain" loading="lazy">
+      <video data-scene="0" class="loop" muted playsinline loop preload="metadata" poster="assets/img/generator_dark.jpg" aria-label="Standby generator beside a dark house in the rain">
+        <source src="assets/video/generator_rain.mp4" type="video/mp4">
+      </video>
       <video data-scene="1" class="scrub" muted playsinline preload="auto" poster="assets/img/generator_dark.jpg">
         <source src="assets/video/generator_start.mp4" type="video/mp4">
       </video>
-      <img data-scene="2" src="assets/img/generator_wide.jpg" alt="Generator running beside the house, lights back on" loading="lazy">
+      <video data-scene="2" class="loop" muted playsinline loop preload="metadata" poster="assets/img/generator_wide.jpg" aria-label="Generator running beside the house, lights back on">
+        <source src="assets/video/generator_wide_loop.mp4" type="video/mp4">
+      </video>
       <div class="shade"></div>
     </div>
 
@@ -177,7 +184,7 @@
       <div class="scene" data-scene="1" data-reveal="0.35">
         <p class="kicker">02 · Auto start</p>
         <h2 class="display">The generator<br>starts itself.</h2>
-        <p class="lede">Natural gas or propane, no fuel cans, no extension cords. The engine warms up for a few seconds before it takes the load.</p>
+        <p class="lede">Mains gas or LPG, no jerry cans, no extension leads. The engine warms up for a few seconds before it takes the load.</p>
       </div>
       <div class="scene" data-scene="2">
         <p class="kicker">02 · Restored</p>
@@ -207,8 +214,9 @@
 <section class="chapter" id="ev-chargers" data-chapter="ev" data-scenes="3" style="--n:3">
   <div class="stage">
     <div class="media">
-      <img data-scene="0" src="assets/img/ev_nocar.jpg" alt="Wall-mounted EV charger beside the breaker panel in an empty garage" loading="lazy">
-      <img data-scene="1" src="assets/img/ev_car.jpg" alt="Electric car parked beside the installed charger" loading="lazy">
+      <video data-scene="0" data-span="2" class="scrub" muted playsinline preload="auto" poster="assets/img/ev_nocar.jpg" aria-label="An electric car reversing in beside the newly installed charger">
+        <source src="assets/video/ev_arrive.mp4" type="video/mp4">
+      </video>
       <video data-scene="2" class="scrub" muted playsinline preload="auto" poster="assets/img/ev_car.jpg">
         <source src="assets/video/ev_plug.mp4" type="video/mp4">
       </video>
@@ -219,17 +227,17 @@
       <div class="scene" data-scene="0">
         <p class="kicker">03 · The install</p>
         <h2 class="display">Every part,<br>done to<br>the manual.</h2>
-        <p class="lede">A 60 A two-pole breaker, 6 AWG copper in conduit, the charger mounted and torqued to spec.</p>
+        <p class="lede">A 32 A RCBO on your board, 6 mm² copper in conduit, the charger mounted and torqued to spec.</p>
       </div>
       <div class="scene" data-scene="1">
         <p class="kicker">03 · Permitted</p>
         <h2 class="display">Clean on the<br>wall. Legal<br>on paper.</h2>
-        <p class="lede">Permit, inspection and a commissioning check at 48 A. Nothing hanging, nothing guessed.</p>
+        <p class="lede">Notified to building control, tested and commissioned at 32 A. Nothing hanging, nothing guessed.</p>
       </div>
       <div class="scene" data-scene="2" data-reveal="0.5">
         <p class="kicker">03 · Charging</p>
         <h2 class="display">Plug in.<br>That's it.</h2>
-        <p class="lede">11.5 kW at 48 A. Overnight is plenty for almost any commute.</p>
+        <p class="lede">7.4 kW at 32 A. Overnight is plenty for almost any commute.</p>
         <a class="btn btn--mint" href="#book">Price my charger →</a>
       </div>
     </div>
@@ -237,15 +245,15 @@
     <aside class="hud hud--list" aria-live="polite">
       <div class="hud__head"><span>03 · Charger</span><span class="hud__status"><i class="dot"></i><b data-status>Installing</b></span></div>
       <ul class="hud__checks">
-        <li data-at="0.04">Load calc on your panel</li>
-        <li data-at="0.12">Permit pulled</li>
-        <li data-at="0.22">60 A two-pole breaker</li>
-        <li data-at="0.34">6 AWG copper in conduit</li>
+        <li data-at="0.04">Load check on your board</li>
+        <li data-at="0.12">Building control notified</li>
+        <li data-at="0.22">32 A RCBO fitted</li>
+        <li data-at="0.34">6 mm² copper in conduit</li>
         <li data-at="0.46">Mounted &amp; torqued</li>
-        <li data-at="0.78">Commissioned at 48 A</li>
-        <li data-at="0.9">Inspection passed</li>
+        <li data-at="0.78">Commissioned at 32 A</li>
+        <li data-at="0.9">Part P certificate issued</li>
       </ul>
-      <div class="hud__row"><span>Circuit</span><b data-key="circuit">60 A · 240 V</b></div>
+      <div class="hud__row"><span>Circuit</span><b data-key="circuit">32 A · 230 V</b></div>
       <div class="hud__row"><span>Output</span><b data-key="output">0.0 kW</b></div>
       <div class="hud__row"><span>Range added</span><b data-key="range">—</b></div>
     </aside>
@@ -264,47 +272,47 @@
   <div class="wrap">
     <p class="kicker">04 · Pricing</p>
     <h2 class="display display--md">Straight prices.<br>No surprises.</h2>
-    <p class="lede lede--wide">Every job starts with a written quote after a 20-minute look at your panel. The number we write is the number you pay.</p>
+    <p class="lede lede--wide">Every job starts with a written quote after a 20-minute look at your board. The number we write is the number you pay.</p>
 
     <div class="cards">
       <article class="card">
         <p class="card__kicker">01 · Panels</p>
-        <h3>200 A service upgrade</h3>
-        <p class="card__price"><small>from</small> $3,200</p>
+        <h3>Consumer unit upgrade</h3>
+        <p class="card__price"><small>from</small> £1,250</p>
         <ul>
-          <li>New 40-space panel, 200 A main</li>
-          <li>Every circuit traced and labeled</li>
-          <li>Whole-home surge protection</li>
-          <li>Permit, inspection, torque log</li>
+          <li>New 18-way metal consumer unit, 100 A main switch</li>
+          <li>Every circuit traced and labelled</li>
+          <li>Whole-home surge protection (SPD)</li>
+          <li>Part P certificate and torque log</li>
         </ul>
         <a class="btn btn--ghost" href="#book">Quote my panel</a>
       </article>
       <article class="card card--featured">
         <p class="card__kicker">02 · Standby generators</p>
-        <h3>22 kW whole-home standby</h3>
-        <p class="card__price"><small>from</small> $9,800</p>
+        <h3>20 kVA whole-home standby</h3>
+        <p class="card__price"><small>from</small> £8,900</p>
         <ul>
           <li>Generator and automatic transfer switch</li>
-          <li>Gas line tie-in, pad and conduit</li>
+          <li>Gas connection, base and conduit</li>
           <li>Weekly self-test, app monitoring</li>
-          <li>Permit, inspection, startup under load</li>
+          <li>Certification and start-up under load</li>
         </ul>
         <a class="btn btn--orange" href="#book">Size my generator</a>
       </article>
       <article class="card">
         <p class="card__kicker">03 · EV chargers</p>
-        <h3>Level 2 charger, 48 A</h3>
-        <p class="card__price"><small>from</small> $1,450</p>
+        <h3>7.4 kW home charger</h3>
+        <p class="card__price"><small>from</small> £995</p>
         <ul>
-          <li>60 A two-pole breaker on your panel</li>
-          <li>6 AWG copper in conduit</li>
+          <li>32 A RCBO on your consumer unit</li>
+          <li>6 mm² copper in conduit</li>
           <li>Charger mounted and commissioned</li>
-          <li>Permit and inspection included</li>
+          <li>Part P notification and certificate</li>
         </ul>
         <a class="btn btn--ghost" href="#book">Price my charger</a>
       </article>
     </div>
-    <p class="fineprint">Prices are typical installed totals for single-family homes in our service area. Written quotes are good for 30 days.</p>
+    <p class="fineprint">Prices are typical installed totals including VAT for detached and semi-detached homes in our area. Written quotes are valid for 30 days.</p>
   </div>
 </section>
 
@@ -317,8 +325,8 @@
       <p class="lede lede--wide">Tell us what's going on. A licensed electrician calls you back the same day with a time, not a sales rep.</p>
       <ul class="book__facts">
         <li><i class="dot dot--mint"></i>Same-day callbacks, 7 days a week</li>
-        <li><i class="dot dot--mint"></i>Licensed, insured, background-checked</li>
-        <li><i class="dot dot--mint"></i>Anne Arundel, Howard and Baltimore counties</li>
+        <li><i class="dot dot--mint"></i>NICEIC approved, insured, DBS-checked</li>
+        <li><i class="dot dot--mint"></i>Surrey, Hampshire and south-west London</li>
       </ul>
     </div>
     <form class="form" id="bookForm" novalidate>
@@ -346,22 +354,22 @@
   <div class="wrap footer__grid">
     <div>
       <a class="brand" href="#top"><span class="brand__mark"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M13.5 2 5 13.5h6L10.5 22 19 10.5h-6z" fill="currentColor"/></svg></span><span class="brand__name">COPPERLINE</span></a>
-      <p>Copperline Electric LLC<br>Annapolis, Maryland</p>
+      <p>Copperline Electrical Ltd<br>Guildford, Surrey</p>
     </div>
     <div>
       <p class="footer__h">Talk to us</p>
-      <p><a href="tel:+14105550199">(410) 555-0199</a><br><a href="mailto:hello@copperline.example">hello@copperline.example</a></p>
+      <p><a href="tel:+442079460199">020 7946 0199</a><br><a href="mailto:hello@copperline.example">hello@copperline.example</a></p>
     </div>
     <div>
       <p class="footer__h">Hours</p>
       <p>Mon–Sat 7am–7pm<br>Emergency line 24/7</p>
     </div>
     <div>
-      <p class="footer__h">License</p>
-      <p>MD Master Electrician #00000<br>Licensed &amp; insured</p>
+      <p class="footer__h">Registration</p>
+      <p>NICEIC Approved Contractor<br>Part P registered · Fully insured</p>
     </div>
   </div>
-  <p class="footer__legal">© <span id="year"></span> Copperline Electric. Prices and specs shown are illustrative.</p>
+  <p class="footer__legal">© <span id="year"></span> Copperline Electrical Ltd. Prices and specs shown are illustrative.</p>
 </footer>
 
 <script src="js/main.js" defer></script>

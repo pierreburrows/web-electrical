@@ -12,23 +12,23 @@
     panels(i, l, p) {
       const status = ['Standby', 'Standby', 'Door open', 'Testing', 'Inspecting', 'Live'][i];
       const tone = ['', '', 'amber', 'mint', 'amber', 'mint'][i];
-      const live = i === 5 ? Math.round(clamp(l / 0.8, 0, 1) * 24) : 0;
-      return { status, tone, v: { volts: i >= 3 ? '240.2 V' : '— V', main: '200 A', live: `${live} / 24` } };
+      const live = i === 5 ? Math.round(clamp(l / 0.8, 0, 1) * 18) : 0;
+      return { status, tone, v: { volts: i >= 3 ? '240.2 V' : '— V', main: '100 A', live: `${live} / 18` } };
     },
     generators(i, l, p) {
       const starting = i === 1 && l < 0.55;
       const status = i === 0 ? 'Outage' : starting ? 'Starting' : 'On generator';
       const tone = i === 0 ? 'orange' : starting ? 'amber' : 'mint';
-      const gen = i === 0 || (i === 1 && l < 0.3) ? 'Standby' : '3,600 rpm · 240 V';
+      const gen = i === 0 || (i === 1 && l < 0.3) ? 'Standby' : '3,000 rpm · 230 V';
       return { status, tone, v: { utility: '0 V', gen, elapsed: `${Math.round(p * 12)} s` } };
     },
     ev(i, l, p) {
       const charging = i === 2 && l > 0.6;
-      const kw = charging ? 11.5 * clamp((l - 0.6) / 0.3, 0, 1) : 0;
+      const kw = charging ? 7.4 * clamp((l - 0.6) / 0.3, 0, 1) : 0;
       return {
         status: charging ? 'Charging' : 'Installing',
         tone: charging ? 'mint' : 'amber',
-        v: { circuit: '60 A · 240 V', output: `${kw.toFixed(1)} kW`, range: charging && l > 0.8 ? '35 mi / hr' : '—' },
+        v: { circuit: '32 A · 230 V', output: `${kw.toFixed(1)} kW`, range: charging && l > 0.8 ? '25 mi / hr' : '—' },
         checks: p
       };
     }
@@ -96,15 +96,16 @@
 
     // media stacking
     c.media.forEach(m => {
-      const k = +m.dataset.scene;
-      m.classList.toggle('is-on', k === i);
-      m.classList.toggle('is-under', k < i);
-      m.classList.toggle('is-gone', k < i - 1 || k > i + 1);
+      const k = +m.dataset.scene, span = +(m.dataset.span || 1), e = k + span - 1;
+      const on = i >= k && i <= e;
+      m.classList.toggle('is-on', on);
+      m.classList.toggle('is-under', e < i);
+      m.classList.toggle('is-gone', e < i - 1 || k > i + 1);
       if (m.tagName === 'IMG') {
-        const s = reduceMotion ? 1 : k === i ? 1 + l * 0.07 : k < i ? 1.07 : 1;
+        const s = reduceMotion ? 1 : on ? 1 + l * 0.07 : e < i ? 1.07 : 1;
         m.style.transform = `scale(${s.toFixed(4)})`;
       } else if (m.classList.contains('loop')) {
-        if (k === i) { if (m.paused) m.play().catch(() => {}); }
+        if (on) { if (m.paused) m.play().catch(() => {}); }
         else if (!m.paused) m.pause();
       }
     });
@@ -116,10 +117,10 @@
 
     // scrub targets
     c.scrub.forEach(s => {
-      const k = +s.v.dataset.scene;
-      if (k === i) s.target = l;
-      else if (k < i) s.target = 1;
-      else s.target = 0;
+      const k = +s.v.dataset.scene, span = +(s.v.dataset.span || 1), e = k + span - 1;
+      if (i < k) s.target = 0;
+      else if (i > e) s.target = 1;
+      else s.target = ((i - k) + l) / span;
     });
 
     // copy
@@ -179,18 +180,18 @@
 
   /* ---------------- Breaker board ---------------- */
   const CIRCUITS = [
-    { name: 'Living room',        amps: 15, poles: 1, load: 4,  room: true },
-    { name: 'Kitchen / dining',   amps: 20, poles: 1, load: 6,  room: true },
-    { name: 'Foyer + porch',      amps: 15, poles: 1, load: 2,  room: true },
-    { name: 'Primary suite',      amps: 15, poles: 1, load: 3,  room: true },
-    { name: 'Bedroom 2',          amps: 15, poles: 1, load: 2,  room: true },
-    { name: 'Bedroom 3',          amps: 15, poles: 1, load: 2,  room: true },
-    { name: 'Bonus room',         amps: 20, poles: 1, load: 3,  room: true },
-    { name: 'Garage + exterior',  amps: 20, poles: 1, load: 4,  room: true },
-    { name: 'Landscape lighting', amps: 15, poles: 1, load: 2,  room: true },
-    { name: 'Heat pump',          amps: 40, poles: 2, load: 18, room: false },
-    { name: 'EV charger',         amps: 60, poles: 2, load: 40, room: false },
-    { name: 'Range',              amps: 50, poles: 2, load: 25, room: false }
+    { name: 'Living room',       amps: 16, load: 3,  room: true },
+    { name: 'Kitchen / dining',  amps: 32, load: 5,  room: true },
+    { name: 'Hall + porch',      amps: 6,  load: 1,  room: true },
+    { name: 'Main bedroom',      amps: 16, load: 2,  room: true },
+    { name: 'Bedroom 2',         amps: 16, load: 2,  room: true },
+    { name: 'Bedroom 3',         amps: 16, load: 2,  room: true },
+    { name: 'Loft room',         amps: 16, load: 2,  room: true },
+    { name: 'Garage + outside',  amps: 20, load: 3,  room: true },
+    { name: 'Garden lighting',   amps: 6,  load: 1,  room: true },
+    { name: 'Heat pump',         amps: 32, load: 12, room: false },
+    { name: 'EV charger',        amps: 32, load: 32, room: false },
+    { name: 'Cooker',            amps: 32, load: 15, room: false }
   ];
   const grid = $('#grid'), mainSw = $('#mainSw'), panelui = $('.panelui');
   const state = { main: false, on: CIRCUITS.map(() => false) };
@@ -199,7 +200,7 @@
   grid.innerHTML = CIRCUITS.map((c, i) => `
     <button class="brk" type="button" data-i="${i}" aria-pressed="false">
       <span class="sw" aria-hidden="true"><i></i></span>
-      <span><span class="brk__name">${c.name}</span><span class="brk__spec">${c.amps} A · ${c.poles}-POLE</span></span>
+      <span><span class="brk__name">${c.name}</span><span class="brk__spec">${c.amps} A · RCBO</span></span>
       <i class="brk__led" aria-hidden="true"></i>
     </button>`).join('');
   const brks = $$('.brk', grid);
@@ -219,9 +220,9 @@
     panelui.classList.toggle('is-main-off', !state.main);
     $('#statLoad').textContent = `${load} A`;
     $('#statRooms').textContent = `${rooms} / ${ROOMS}`;
-    const pct = Math.round(load / 200 * 100);
+    const pct = Math.round(load / 100 * 100);
     $('#meterFill').style.width = `${Math.min(100, pct)}%`;
-    $('#meterText').textContent = `${pct}% of a 200 A service`;
+    $('#meterText').textContent = `${pct}% of a 100 A supply`;
     $('#houseLit').style.opacity = live ? (rooms / ROOMS).toFixed(3) : 0;
   }
   grid.addEventListener('click', e => {
